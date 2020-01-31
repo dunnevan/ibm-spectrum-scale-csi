@@ -1,0 +1,23 @@
+filters:
+  ".*":
+    reviewers:
+      - dunnevan
+      - whowutwut
+      - mew2057
+    approvers:
+      - dunnevan
+      - whowutwut
+      - mew2057
+
+  "driver/.*":
+    reviewers:
+      - dunnevan
+    approvers:
+      - dunnevan
+
+  "operator/.*":
+    reviewers:
+      - dunnevan
+    approvers:
+      - dunnevan
+
