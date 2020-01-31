@@ -2,12 +2,8 @@ filters:
   ".*":
     reviewers:
       - dunnevan
-      - whowutwut
-      - mew2057
     approvers:
       - dunnevan
-      - whowutwut
-      - mew2057
 
   "driver/.*":
     reviewers:
