@@ -1,0 +1,1 @@
+#docker build ${IMAGE_LABEL} --build-arg GOFLAGS=${GOFLAGS} -f Dockerfile -t ${REPO_NAME_DRIVER} .
