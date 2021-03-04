@@ -1,0 +1,9 @@
+apiVersion: storage.k8s.io/v1
+kind: StorageClass
+metadata:
+   name: gpfs-ifset 
+provisioner: spectrumscale.csi.ibm.com
+parameters:
+    volBackendFs: "fs1"
+    clusterId: "14561631880435742824"
+reclaimPolicy: Delete

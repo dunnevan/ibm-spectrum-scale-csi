@@ -1,0 +1,24 @@
+# permissions for end users to edit csis.
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: csi-editor-role
+rules:
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - csis
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - scale.spectrum.ibm.com
+  resources:
+  - csis/status
+  verbs:
+  - get

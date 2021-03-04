@@ -1,0 +1,7 @@
+apiVersion: scale.spectrum.ibm.com/v1
+kind: CSI
+metadata:
+  name: csi-sample
+spec:
+  # Add fields here
+  foo: bar

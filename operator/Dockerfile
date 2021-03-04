@@ -1,32 +1,27 @@
-# Multi-arch build for IBM Spectrum Scale CSI Operator
+# Build the manager binary
+FROM golang:1.15 as builder
 
-FROM quay.io/operator-framework/ansible-operator:v1.3.2
-MAINTAINER deeghuge@in.ibm.com
+WORKDIR /workspace
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+# cache deps before building and copying source so that we don't need to re-download as much
+# and so that source changes don't invalidate our downloaded layer
+RUN go mod download
 
-ARG CSI_ATTACHER_IMAGE
-ARG CSI_PROVISIONER_IMAGE
-ARG CSI_NODE_REGISTRAR_IMAGE
-ARG CSI_DRIVER_IMAGE
-ARG GIT_COMMIT
+# Copy the go source
+COPY main.go main.go
+COPY apis/ apis/
+COPY controllers/ controllers/
 
+# Build
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 GO111MODULE=on go build -a -o manager main.go
 
-ENV CSI_ATTACHER_IMAGE $CSI_ATTACHER_IMAGE
-ENV CSI_PROVISIONER_IMAGE $CSI_PROVISIONER_IMAGE
-ENV CSI_NODE_REGISTRAR_IMAGE $CSI_NODE_REGISTRAR_IMAGE
-ENV CSI_DRIVER_IMAGE $CSI_DRIVER_IMAGE
+# Use distroless as minimal base image to package the manager binary
+# Refer to https://github.com/GoogleContainerTools/distroless for more details
+FROM gcr.io/distroless/static:nonroot
+WORKDIR /
+COPY --from=builder /workspace/manager .
+USER 65532:65532
 
-LABEL name="IBM Spectrum Scale CSI Operator" \
-      vendor="ibm" \
-      version="2.2.0" \
-      release="1" \
-      run='docker run ibm-spectrum-scale-csi-operator' \
-      summary="An Ansible based operator to run and manage the deployment of the IBM Spectrum Scale CSI Driver." \
-      description="An Ansible based operator to run and manage the deployment of the IBM Spectrum Scale CSI Driver." \
-      git_commit=$GIT_COMMIT
-
-
-COPY hacks/health_check.sh .
-COPY licenses /licenses
-COPY watches.yaml ${HOME}/watches.yaml
-COPY roles/ ${HOME}/roles/
-COPY playbooks/ ${HOME}/playbooks/
+ENTRYPOINT ["/manager"]
